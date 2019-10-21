@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,8 @@ public class AlunoDAO extends SQLiteOpenHelper {
                 String removendoTabelaAntiga = "DROP TABLE Alunos";
                 db.execSQL(removendoTabelaAntiga);
 
-                String renomeando_nova_tabela = "ALTER TABLE Alunos_novo RENAME TO Alunos";
-                db.execSQL(renomeando_nova_tabela);
+                String renomeandotabela = "ALTER TABLE Alunos_novo RENAME TO Alunos";
+                db.execSQL(renomeandotabela);
 
             case 3:
                 String buscaAlunos = "SELECT * FROM Alunos";
@@ -86,16 +87,21 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     public void insere(Aluno aluno) {
         SQLiteDatabase db = getWritableDatabase();
-
+        insereIdSeNecessario(aluno);
         ContentValues dados = pegaDadosDoAluno(aluno);
-
         db.insert("Alunos", null, dados);
-//        aluno.setId(id);
+    }
+
+    private void insereIdSeNecessario(Aluno aluno) {
+        if(aluno.getId() == null){
+        aluno.setId(geraUUID());
+        }
     }
 
     @NonNull
     private ContentValues pegaDadosDoAluno(Aluno aluno) {
         ContentValues dados = new ContentValues();
+        dados.put("id", aluno.getId());
         dados.put("nome", aluno.getNome());
         dados.put("endereco", aluno.getEndereco());
         dados.put("telefone", aluno.getTelefone());
@@ -156,5 +162,26 @@ public class AlunoDAO extends SQLiteOpenHelper {
         int resultados = c.getCount();
         c.close();
         return resultados > 0;
+    }
+
+    public void sincroniza(List<Aluno> alunos) {
+        Log.e("Teste Sincroniza", String.valueOf(alunos) );
+        for (Aluno aluno:
+             alunos) {
+            if(existe(aluno)){
+                altera(aluno);
+            }else{
+            insere(aluno);
+            }
+        }
+    }
+
+    private boolean existe(Aluno aluno) {
+        SQLiteDatabase db = getReadableDatabase();
+        String existe = "SELECT id FROM Alunos WHERE id=? LIMIT 1";
+        Cursor cursor = db.rawQuery(existe, new String[]{aluno.getId()});
+        int quantidade = cursor.getCount();
+//        cursor.close();
+        return quantidade > 0;
     }
 }
