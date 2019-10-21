@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE Alunos (id INTEGER PRIMARY KEY, " +
+        String sql = "CREATE TABLE Alunos (id CHAR(36) PRIMARY KEY, " +
                 "nome TEXT NOT NULL, " +
                 "endereco TEXT, " +
                 "telefone TEXT, " +
@@ -165,13 +164,12 @@ public class AlunoDAO extends SQLiteOpenHelper {
     }
 
     public void sincroniza(List<Aluno> alunos) {
-        Log.e("Teste Sincroniza", String.valueOf(alunos) );
-        for (Aluno aluno:
-             alunos) {
-            if(existe(aluno)){
+        for (Aluno aluno :
+                alunos) {
+            if (existe(aluno)) {
                 altera(aluno);
-            }else{
-            insere(aluno);
+            } else {
+                insere(aluno);
             }
         }
     }
