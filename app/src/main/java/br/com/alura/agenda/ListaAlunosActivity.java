@@ -4,9 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import retrofit2.Response;
 public class ListaAlunosActivity extends AppCompatActivity {
 
     private ListView listaAlunos;
+    private SwipeRefreshLayout swipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,14 @@ public class ListaAlunosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_alunos);
 
         listaAlunos = (ListView) findViewById(R.id.lista_alunos);
+        swipe = findViewById(R.id.swipe_lista_alunos);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                buscaAlunos();
+            }
+        });
 
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,13 +77,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
     private void carregaLista() {
         AlunoDAO dao = new AlunoDAO(this);
         List<Aluno> alunos = dao.buscaAlunos();
-
-        for (Aluno aluno : alunos){
-            Log.i("id do aluno", String.valueOf(aluno.getId()));
-        }
-
         dao.close();
-
         AlunosAdapter adapter = new AlunosAdapter(this, alunos);
         listaAlunos.setAdapter(adapter);
     }
@@ -81,7 +85,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         carregaLista();
     }
 
@@ -95,11 +98,13 @@ public class ListaAlunosActivity extends AppCompatActivity {
                 dao.sincroniza(alunoSync.getAlunos());
                 dao.close();
                 carregaLista();
+                swipe.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<AlunoSync> call, Throwable t) {
                 Log.e("onFailure", t.getMessage());
+                swipe.setRefreshing(false);
             }
         });
     }
