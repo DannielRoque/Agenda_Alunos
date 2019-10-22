@@ -50,6 +50,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
             }
         });
 
+
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> lista, View item, int position, long id) {
@@ -77,7 +78,13 @@ public class ListaAlunosActivity extends AppCompatActivity {
     private void carregaLista() {
         AlunoDAO dao = new AlunoDAO(this);
         List<Aluno> alunos = dao.buscaAlunos();
+
+        for (Aluno aluno : alunos){
+            Log.i("id do aluno", String.valueOf(aluno.getId()));
+        }
+
         dao.close();
+
         AlunosAdapter adapter = new AlunosAdapter(this, alunos);
         listaAlunos.setAdapter(adapter);
     }
@@ -183,7 +190,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
 
                 Call<Void> call = new RetrofitInicializador().getAlunoService().deleta(aluno.getId());
-
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -195,11 +201,12 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(ListaAlunosActivity.this,
-                                "Não foi possível deletar aluno, Tente novamente mais tarde",
+                        Toast.makeText(ListaAlunosActivity.this, "Não foi possível realizar a exclusão, Favor tentar novamente mais tarde",
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+
+
                 return false;
             }
         });

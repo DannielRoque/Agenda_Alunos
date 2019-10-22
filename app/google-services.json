@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "44371572222",
+    "firebase_url": "https://photoblog-77eaa.firebaseio.com",
+    "project_id": "photoblog-77eaa",
+    "storage_bucket": "photoblog-77eaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44371572222:android:a0077bd8cc3b1ec2b07caf",
+        "android_client_info": {
+          "package_name": "br.com.alura.agenda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44371572222-uub0kva5del1ko3nnd390m9ce5d0cti3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.alura.agenda",
+            "certificate_hash": "b82f501ab1f9cbe9a22d5c9c204221b2fe47608c"
+          }
+        },
+        {
+          "client_id": "44371572222-vtqmvv5a09v8o6plrf85o62s33prjb4u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAig4uYKoPXb3OM03h8nQAbUhg4uM4Lff0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "44371572222-vtqmvv5a09v8o6plrf85o62s33prjb4u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
