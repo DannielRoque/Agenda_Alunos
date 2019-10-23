@@ -55,7 +55,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                alunoSincronizador.buscaAlunos();
+                alunoSincronizador.buscaTodos();
             }
         });
 
@@ -81,7 +81,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         });
 
         registerForContextMenu(listaAlunos);
-        alunoSincronizador.buscaAlunos();
+        alunoSincronizador.buscaTodos();
         alunoFirebase.coletandoTokenUsuario();
     }
 
@@ -108,10 +108,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
     public void atualizaAlunoEvento(AtualizarListaAlunoEvent evento){
         if(swipe.isRefreshing()) swipe.setRefreshing(false);
         carregaLista();
-    }
-
-    private void buscaAlunos() {
-        alunoSincronizador.buscaAlunos();
     }
 
     @Override

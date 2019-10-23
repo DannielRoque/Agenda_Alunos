@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
+import org.jetbrains.annotations.NotNull;
 
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.dto.AlunoSync;
@@ -17,20 +18,39 @@ import retrofit2.Response;
 public class AlunoSincronizador {
     private  Context context;
     private EventBus eventBus = EventBus.getDefault();
+    private AlunoPreferences preferences;
 
     public AlunoSincronizador(Context context) {
         this.context = context;
+        preferences = new AlunoPreferences(context);
     }
 
-    public void buscaAlunos() {
+    public void buscaTodos(){
+    if(preferences.temVersao()){
+        buscaNovos();
+        }else{
+        buscaAlunos();
+    }
+    }
+
+    private void buscaNovos() {
+        String versao = preferences.getVersao();
+        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().novos(versao);
+        call.enqueue(buscaAlunosCallback());
+    }
+
+    private void buscaAlunos() {
         Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
-        call.enqueue(new Callback<AlunoSync>() {
+        call.enqueue(buscaAlunosCallback());
+    }
+
+    @NotNull
+    private Callback<AlunoSync> buscaAlunosCallback() {
+        return new Callback<AlunoSync>() {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
                 String versao = alunoSync.getMomentoDaUltimaModificacao();
-
-                AlunoPreferences preferences = new AlunoPreferences(context);
 
                 preferences.salvaVersao(versao);
                 AlunoDAO dao = new AlunoDAO(context);
@@ -45,6 +65,6 @@ public class AlunoSincronizador {
                 Log.e("onFailure", t.getMessage());
                 eventBus.post(new AtualizarListaAlunoEvent());
             }
-        });
+        };
     }
 }
