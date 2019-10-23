@@ -38,8 +38,16 @@ public class AlunoFirebaseMessagingToken extends FirebaseMessagingService {
         sendRegistrationToServer(token);
     }
 
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+        Log.i(TAG, "mensagem do alem: "+ remoteMessage.getData());
+        Map<String, String> mensagem = remoteMessage.getData();
+        Log.i("Mensagem recebida", String.valueOf(mensagem));
+        converteParaAluno(mensagem);
+    }
+
     public void coletandoTokenUsuario() {
-        final String respostaToken="";
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -69,14 +77,9 @@ public class AlunoFirebaseMessagingToken extends FirebaseMessagingService {
                 Log.i("Erro ao enviar token", t.getMessage());
             }
         });
+
     }
-    @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
-        Map<String, String> mensagem = remoteMessage.getData();
-        Log.i("Mensagem recebida", String.valueOf(mensagem));
-        converteParaAluno(mensagem);
-    }
+
 
     private void converteParaAluno(Map<String, String> mensagem) {
         String chaveDeAcesso = "alunoSync";
