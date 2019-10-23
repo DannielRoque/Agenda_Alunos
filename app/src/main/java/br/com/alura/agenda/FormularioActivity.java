@@ -19,7 +19,6 @@ import java.io.File;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.modelo.Aluno;
 import br.com.alura.agenda.retrofit.RetrofitInicializador;
-import br.com.alura.agenda.services.MyFirebaseMessagingService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
